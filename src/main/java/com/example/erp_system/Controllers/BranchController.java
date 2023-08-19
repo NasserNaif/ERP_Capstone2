@@ -39,4 +39,24 @@ public class BranchController {
         branchServices.deleteBranch(id);
         return ResponseEntity.status(201).body(new ApiResponse("branch deleted"));
     }
+
+    // find all the employees who work in specific branch
+
+    @GetMapping("employees/{branchId}")
+    public ResponseEntity findEmployeesByBranchId(@PathVariable Integer branchId) {
+        return ResponseEntity.status(200).body(branchServices.findEmployeesByBranchId(branchId));
+    }
+
+
+    @GetMapping("expense/{branchId}")
+    public ResponseEntity countExpense(@PathVariable Integer branchId) {
+        return ResponseEntity.status(200).body(branchServices.totalExpense(branchId));
+    }
+
+    @GetMapping("raise")
+    public ResponseEntity raiseSalary() {
+        branchServices.raiseSalary();
+        return ResponseEntity.status(200).body(new ApiResponse("employees raised"));
+    }
+
 }

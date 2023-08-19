@@ -26,8 +26,8 @@ public class Employee {
 
     @NotNull(message = "salary must not be null")
     @Positive(message = "salary must be positive value")
-    @Column(columnDefinition = "integer not null default 500")
-    private Integer salary;
+    @Column(columnDefinition = "double(10,2) not null default 500")
+    private Double salary;
 
     @NotEmpty(message = "position must not be empty")
     @Pattern(regexp = "(manager|salesman|tea boy)")

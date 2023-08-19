@@ -44,4 +44,14 @@ public class EmployeeServices {
         else
             throw new ApiException("wrong ID");
     }
+
+    public List<Employee> findEmployeesByBranchId(Integer branchId) {
+        return employeeRepo.findAllByBranchId(branchId);
+    }
+
+    public Employee searchByBranchId(Integer id) {
+        return employeeRepo.findEmployeeByBranchId(id);
+    }
+
+    
 }

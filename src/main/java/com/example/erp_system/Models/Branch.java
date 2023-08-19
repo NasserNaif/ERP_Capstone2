@@ -38,4 +38,9 @@ public class Branch {
     @Positive(message = "utilities must be positive value")
     @Column(columnDefinition = "integer not null")
     private Integer utilities;
+
+
+    @NotNull(message = "budget must not be empty")
+    @Column(columnDefinition = "integer not null")
+    private Integer budget;
 }
