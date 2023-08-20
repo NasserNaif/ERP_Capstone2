@@ -79,29 +79,50 @@ public class BranchServices {
 
     // raise salary func
 
-    public void raiseSalary() {
-        List<Branch> branches = branchRepo.raiseSalary();
+    public void raiseSalary(Integer id) {
+        Branch branches = branchRepo.findBranchById(id);
 
         if (branches != null) {
 
 
-            for (Branch b : branches
-            ) {
-                Employee emp = employeeServices.searchByBranchId(b.getId());
+            List<Employee> emps = employeeServices.findEmployeesByBranchId(branches.getId());
 
-                if (emp.getPosition().equals("manager")) {
-                    emp.setSalary(emp.getSalary() + (emp.getSalary() * 0.2));
-                    employeeServices.updateEmployee(emp.getId(), emp);
-                } else if (emp.getPosition().equals("salesman")) {
-                    emp.setSalary(emp.getSalary() + (emp.getSalary() * 0.15));
-                    employeeServices.updateEmployee(emp.getId(), emp);
+            System.out.println(emps);
+            for (Employee e : emps
+            ) {
+                if (e.getPosition().equals("manager")) {
+                    e.setSalary(e.getSalary() + (e.getSalary() * 0.2));
+                    employeeServices.saveEmployee(e);
+                } else if (e.getPosition().equals("salesman")) {
+                    e.setSalary(e.getSalary() + (e.getSalary() * 0.15));
+                    employeeServices.saveEmployee(e);
                 } else {
-                    emp.setSalary(emp.getSalary() + (emp.getSalary() * 0.1));
-                    employeeServices.updateEmployee(emp.getId(), emp);
+                    e.setSalary(e.getSalary() + (e.getSalary() * 0.1));
+                    employeeServices.saveEmployee(e);
                 }
             }
+
+
         } else
             throw new ApiException("there's no branches sell more than 50K riyals this month.");
+    }
+
+
+    public String totalNetIncome() {
+        int totalRevenue = 0;
+        int totalExpense = 0;
+
+        List<Branch> branches = branchRepo.findAll();
+
+        for (Branch b : branches
+        ) {
+            totalRevenue += b.getRevenue();
+            totalExpense += b.getUtilities() + b.getRent();
+        }
+
+        int total = totalRevenue - totalExpense;
+
+        return "total net Income is : " + total;
     }
 
 }

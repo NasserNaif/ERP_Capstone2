@@ -53,10 +53,15 @@ public class BranchController {
         return ResponseEntity.status(200).body(branchServices.totalExpense(branchId));
     }
 
-    @GetMapping("raise")
-    public ResponseEntity raiseSalary() {
-        branchServices.raiseSalary();
+    @GetMapping("raise/{id}")
+    public ResponseEntity raiseSalary(@PathVariable Integer id) {
+        branchServices.raiseSalary(id);
         return ResponseEntity.status(200).body(new ApiResponse("employees raised"));
+    }
+
+    @GetMapping("income")
+    public ResponseEntity totalIncome() {
+        return ResponseEntity.status(200).body(branchServices.totalNetIncome());
     }
 
 }

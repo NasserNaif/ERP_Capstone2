@@ -34,7 +34,7 @@ public class EmployeeServices {
             employee.setBranchId(newEmployee.getBranchId());
             employeeRepo.save(employee);
         }
-        throw new ApiException("wrong ID");
+        throw new ApiException("wrong ID----");
     }
 
     public void deleteEmployee(Integer id) {
@@ -53,5 +53,8 @@ public class EmployeeServices {
         return employeeRepo.findEmployeeByBranchId(id);
     }
 
-    
+    public void saveEmployee(Employee employee) {
+        employeeRepo.save(employee);
+    }
+
 }
