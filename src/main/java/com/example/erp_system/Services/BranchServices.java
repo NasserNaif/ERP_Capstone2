@@ -55,7 +55,7 @@ public class BranchServices {
     public List<Employee> findEmployeesByBranchId(Integer branchId) {
         List<Employee> employees = employeeServices.findEmployeesByBranchId(branchId);
 
-        if (employees != null)
+        if (!employees.isEmpty())
             return employees;
         else
             throw new ApiException("wrong branch ID");
