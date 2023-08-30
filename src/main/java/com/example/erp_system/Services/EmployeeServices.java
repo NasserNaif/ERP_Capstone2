@@ -3,6 +3,9 @@ package com.example.erp_system.Services;
 import com.example.erp_system.APIs.ApiException;
 import com.example.erp_system.Models.Branch;
 import com.example.erp_system.Models.Employee;
+import com.example.erp_system.Models.User;
+import com.example.erp_system.Repos.AuthRepo;
+import com.example.erp_system.Repos.BranchRepo;
 import com.example.erp_system.Repos.EmployeeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,12 +17,19 @@ import java.util.List;
 public class EmployeeServices {
 
     private final EmployeeRepo employeeRepo;
+    private final BranchRepo branchRepo;
+    private final AuthRepo authRepo;
 
-    public List<Employee> getEmployees() {
-        return employeeRepo.findAll();
-    }
 
-    public void addEmployee(Employee newEmployee) {
+    public void addEmployee(Integer userID, Employee newEmployee) {
+
+        User user = authRepo.findUserById(userID);
+
+        if (user.getStatus().equalsIgnoreCase("waiting")) {
+            throw new ApiException("sorry! your status isn't confirmed");
+        }
+
+        newEmployee.setUser(user);
         employeeRepo.save(newEmployee);
     }
 
@@ -31,30 +41,18 @@ public class EmployeeServices {
             employee.setSalary(newEmployee.getSalary());
             employee.setPosition(newEmployee.getPosition());
             employee.setTotalSales(newEmployee.getTotalSales());
-            employee.setBranchId(newEmployee.getBranchId());
             employeeRepo.save(employee);
         }
         throw new ApiException("wrong ID----");
     }
 
     public void deleteEmployee(Integer id) {
-        Employee employee = employeeRepo.findEmployeeById(id);
+        User employee = authRepo.findUserById(id);
         if (employee != null)
-            employeeRepo.delete(employee);
+            authRepo.delete(employee);
         else
-            throw new ApiException("wrong ID");
+            throw new ApiException("you are not authorized to delete this employee ");
     }
 
-    public List<Employee> findEmployeesByBranchId(Integer branchId) {
-        return employeeRepo.findAllByBranchId(branchId);
-    }
-
-    public Employee searchByBranchId(Integer id) {
-        return employeeRepo.findEmployeeByBranchId(id);
-    }
-
-    public void saveEmployee(Employee employee) {
-        employeeRepo.save(employee);
-    }
 
 }

@@ -1,5 +1,6 @@
 package com.example.erp_system.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -37,4 +38,9 @@ public class Product {
     @Positive(message = "sales must be positive value")
     @Column(columnDefinition = "integer not null default 0")
     private Integer sales;
+
+    @ManyToOne
+    @JoinColumn
+    @JsonIgnore
+    private Branch branch;
 }

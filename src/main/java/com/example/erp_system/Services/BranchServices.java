@@ -3,13 +3,18 @@ package com.example.erp_system.Services;
 import com.example.erp_system.APIs.ApiException;
 import com.example.erp_system.Models.Branch;
 import com.example.erp_system.Models.Employee;
+import com.example.erp_system.Models.Product;
+import com.example.erp_system.Models.User;
+import com.example.erp_system.Repos.AuthRepo;
 import com.example.erp_system.Repos.BranchRepo;
 import com.example.erp_system.Repos.EmployeeRepo;
+import com.example.erp_system.Repos.ProductRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Book;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +22,9 @@ import java.util.List;
 public class BranchServices {
 
     private final BranchRepo branchRepo;
-    private final EmployeeServices employeeServices;
+    private final EmployeeRepo employeeRepo;
+    private final ProductRepo productRepo;
+    private final AuthRepo authRepo;
 
 
     public List<Branch> getBranches() {
@@ -53,12 +60,19 @@ public class BranchServices {
 
     // find all the employees who work in specific branch
     public List<Employee> findEmployeesByBranchId(Integer branchId) {
-        List<Employee> employees = employeeServices.findEmployeesByBranchId(branchId);
+        Branch branch = branchRepo.findBranchById(branchId);
+
+
+        if (branch == null) {
+            throw new ApiException("wrong branch ID");
+        }
+
+        List<Employee> employees = employeeRepo.findAllByBranch(branch);
 
         if (!employees.isEmpty())
             return employees;
         else
-            throw new ApiException("wrong branch ID");
+            throw new ApiException("sorry! there's no employees in this branch");
     }
 
 
@@ -66,6 +80,9 @@ public class BranchServices {
     public String totalExpense(Integer branchID) {
         Branch branch = branchRepo.findBranchById(branchID);
 
+        if (branch == null) {
+            throw new ApiException("sorry! there's no branch with this ID : " + branchID);
+        }
 
         branch.setBudget(branch.getBudget() - (branch.getRent() + branch.getUtilities()));
         branchRepo.save(branch);
@@ -85,20 +102,22 @@ public class BranchServices {
         if (branches != null) {
 
 
-            List<Employee> emps = employeeServices.findEmployeesByBranchId(branches.getId());
+            List<Employee> emps = employeeRepo.findAllByBranch(branches);
+
 
             System.out.println(emps);
             for (Employee e : emps
             ) {
                 if (e.getPosition().equals("manager")) {
                     e.setSalary(e.getSalary() + (e.getSalary() * 0.2));
-                    employeeServices.saveEmployee(e);
+                    employeeRepo.save(e);
+
                 } else if (e.getPosition().equals("salesman")) {
                     e.setSalary(e.getSalary() + (e.getSalary() * 0.15));
-                    employeeServices.saveEmployee(e);
+                    employeeRepo.save(e);
                 } else {
                     e.setSalary(e.getSalary() + (e.getSalary() * 0.1));
-                    employeeServices.saveEmployee(e);
+                    employeeRepo.save(e);
                 }
             }
 
@@ -124,5 +143,37 @@ public class BranchServices {
 
         return "total net Income is : " + total;
     }
+
+    public void addEmployee(Integer branchID, Integer employeeID) {
+        Branch branch = branchRepo.findBranchById(branchID);
+        Employee employee = employeeRepo.findEmployeeById(employeeID);
+
+        if (branch == null) {
+            throw new ApiException("sorry! there's no branch with this ID : " + branchID);
+        } else if (employee == null) {
+            throw new ApiException("sorry! there's no employee with this ID : " + employeeID);
+        }
+
+
+        employee.setBranch(branch);
+        employeeRepo.save(employee);
+    }
+
+    public List<Product> getBranchProduct(Integer branchId) {
+        Branch branch = branchRepo.findBranchById(branchId);
+
+
+        if (branch == null) {
+            throw new ApiException("wrong branch ID");
+        }
+
+        List<Product> products = productRepo.findAllByBranch(branch);
+
+        if (!products.isEmpty())
+            return products;
+        else
+            throw new ApiException("sorry! there's no employees in this branch");
+    }
+
 
 }

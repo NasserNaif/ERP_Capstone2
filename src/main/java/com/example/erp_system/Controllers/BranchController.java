@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Set;
+
 @RestController
 @RequestMapping("/api/v1/branch/")
 @RequiredArgsConstructor
@@ -41,12 +44,17 @@ public class BranchController {
     }
 
     // find all the employees who work in specific branch
-
+//
     @GetMapping("employees/{branchId}")
     public ResponseEntity findEmployeesByBranchId(@PathVariable Integer branchId) {
         return ResponseEntity.status(200).body(branchServices.findEmployeesByBranchId(branchId));
     }
 
+
+    @GetMapping("products/{branchId}")
+    public ResponseEntity findBranchProduct(@PathVariable Integer branchId) {
+        return ResponseEntity.status(200).body(branchServices.getBranchProduct(branchId));
+    }
 
     @GetMapping("expense/{branchId}")
     public ResponseEntity countExpense(@PathVariable Integer branchId) {
@@ -63,5 +71,13 @@ public class BranchController {
     public ResponseEntity totalIncome() {
         return ResponseEntity.status(200).body(branchServices.totalNetIncome());
     }
+
+
+    @PutMapping("add-employee/{branchID}/{employeeID}")
+    public ResponseEntity addEmployeeToBranch(@PathVariable Integer branchID, @PathVariable Integer employeeID) {
+        branchServices.addEmployee(branchID, employeeID);
+        return ResponseEntity.status(200).body(new ApiResponse("employee added"));
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.example.erp_system.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +18,6 @@ import lombok.NoArgsConstructor;
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotEmpty(message = "name must not be empty")
@@ -39,8 +39,13 @@ public class Employee {
     @Column(columnDefinition = "integer not null default 0")
     private Integer totalSales;
 
-    @NotNull(message = "branch ID must not be null")
-    @Positive(message = "branch ID must be positive value")
-    @Column(columnDefinition = "integer not null default 1")
-    private Integer branchId;
+    @OneToOne
+    @MapsId
+    @JsonIgnore
+    private User user;
+
+    @ManyToOne
+    @JoinColumn
+    @JsonIgnore
+    private Branch branch;
 }

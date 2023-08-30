@@ -1,6 +1,7 @@
 package com.example.erp_system.Models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -43,4 +46,15 @@ public class Branch {
     @NotNull(message = "budget must not be empty")
     @Column(columnDefinition = "integer not null")
     private Integer budget;
+
+
+    @OneToMany(cascade = CascadeType.DETACH, mappedBy = "branch")
+    @JsonIgnore
+    private Set<Employee> employees;
+
+
+    @OneToMany(cascade = CascadeType.DETACH, mappedBy = "branch")
+    @JsonIgnore
+    private Set<Product> products;
+
 }
