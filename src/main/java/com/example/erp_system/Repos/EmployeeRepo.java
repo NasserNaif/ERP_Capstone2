@@ -18,7 +18,7 @@ public interface EmployeeRepo extends JpaRepository<Employee, Integer> {
     List<Employee> findAllByBranch(Branch branch);
 
 
-    List<Employee> findAllByUser(User user);
+//    List<Employee> findAllByUser(User user);
 
 
 }
