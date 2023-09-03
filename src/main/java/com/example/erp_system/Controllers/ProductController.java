@@ -36,6 +36,6 @@ public class ProductController {
     @DeleteMapping("delete/{id}")
     public ResponseEntity deleteProduct(@PathVariable Integer id) {
         productServices.deleteProduct(id);
-        return ResponseEntity.status(201).body(new ApiResponse("product deleted"));
+        return ResponseEntity.status(200).body(new ApiResponse("product deleted"));
     }
 }

@@ -54,7 +54,7 @@ public class User implements UserDetails {
     @PrimaryKeyJoinColumn
     private Employee employee;
 
-    
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(this.role));
